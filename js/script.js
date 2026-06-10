@@ -31,6 +31,7 @@ const jenisKelaminError = document.getElementById('jenisKelaminError');
 const photoError = document.getElementById('photoError');
 const gpsError = document.getElementById('gpsError');
 const declarationError = document.getElementById('declarationError');
+const scriptUrl = 'https://script.google.com/macros/s/AKfycbw_OJT7TctYrJBwYGBtQUsRQlXj7PL_6OtJsEsHEXmeZpbawiSIbauX9t8MqZsQV_Gg/exec';
 
 // Variabel state
 let stream;
