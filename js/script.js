@@ -168,42 +168,48 @@ submitButton.addEventListener('click', () => {
         jenisKelamin: document.querySelector('input[name="jenisKelamin"]:checked').value
     };
     
-    google.script.run
-        .withSuccessHandler(response => {
-            spinner.style.display = 'none';
-            submitButton.disabled = false;
-            if (response.success) {
-                statusMessage.textContent = response.message;
-                statusMessage.className = 'success';
-                myForm.reset();
-                capturedImageData = null;
-                photoPreview.src = "#";
-                previewContainer.style.display = 'none';
-                startCameraButton.style.display = 'inline-block';
-                startCameraButton.disabled = false;
-                startCameraButton.textContent = "Aktifkan Kamera & GPS";
-                locationData = { latitude: null, longitude: null };
-                stopCameraStream();
-            } else {
-                statusMessage.textContent = "Error dari Server: " + response.message;
-                statusMessage.className = 'error';
-            }
-            statusMessage.style.display = 'block';
-        })
-        .withFailureHandler(error => {
-            spinner.style.display = 'none';
-            submitButton.disabled = false;
-            statusMessage.textContent = "Error Eksekusi Script: " + error.message;
+const payloadData = {
+        formData: formDataPayload,
+        imageDataUrlString: capturedImageData,
+        clientFileName: fileName,
+        locationData: locationData
+    };
+
+    fetch(scriptUrl, {
+        method: 'POST',
+        body: JSON.stringify(payloadData) 
+    })
+    .then(response => response.json())
+    .then(response => {
+        spinner.style.display = 'none';
+        submitButton.disabled = false;
+        if (response.success) {
+            statusMessage.textContent = response.message;
+            statusMessage.className = 'success';
+            myForm.reset();
+            capturedImageData = null;
+            photoPreview.src = "#";
+            previewContainer.style.display = 'none';
+            startCameraButton.style.display = 'inline-block';
+            startCameraButton.disabled = false;
+            startCameraButton.textContent = "Aktifkan Kamera & GPS";
+            locationData = { latitude: null, longitude: null };
+            stopCameraStream();
+        } else {
+            statusMessage.textContent = "Error dari Server: " + response.message;
             statusMessage.className = 'error';
-            statusMessage.style.display = 'block';
-            console.error("Apps Script execution error:", error);
-        })
-        .saveData(
-            formDataPayload,
-            capturedImageData,
-            fileName,
-            locationData
-        );
+        }
+        statusMessage.style.display = 'block';
+    })
+    .catch(error => {
+        spinner.style.display = 'none';
+        submitButton.disabled = false;
+        statusMessage.textContent = "Error Jaringan: " + error.message;
+        statusMessage.className = 'error';
+        statusMessage.style.display = 'block';
+        console.error("Fetch error:", error);
+    });
+
 });
 
 // --- FUNGSI UTILITAS & EVENT LISTENER LAINNYA ---
