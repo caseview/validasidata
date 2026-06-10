@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+</head>
+<body style="font-family: Arial, sans-serif; text-align: center; margin-top: 50px;">
+
+    <h1 style="margin-bottom: 5px;">Login Validasi Data</h1>
+    <h3 style="margin-top: 0; color: #555;">Silakan masukkan sandi</h3>
+
+    <div style="margin-top: 30px;">
+        <input type="password" id="inputToken" placeholder="Masukkan Sandi..." style="padding: 10px; width: 200px;">
+        <br><br>
+        <button onclick="cekLogin()" style="padding: 10px 20px; background-color: #007BFF; color: white; border: none; cursor: pointer;">Masuk</button>
+    </div>
+
+    <p id="pesanError" style="color: red; margin-top: 20px;"></p>
+
+    <script>
+        function cekLogin() {
+            var token = document.getElementById('inputToken').value;
+            var pesan = document.getElementById('pesanError');
+
+            // Tentukan kata sandi atau token di sini
+            var tokenBenar = "INFORMATIKA7";
+
+            if(token === tokenBenar) {
+                // Jika token benar, arahkan ke halaman validasi NISN
+                window.location.href = "validasi.html";
+            } else if (token === "") {
+                pesan.innerHTML = "Token tidak boleh kosong!";
+            } else {
+                pesan.innerHTML = "Token salah, silakan coba lagi.";
+            }
+        }
+    </script>
+</body>
+</html>
