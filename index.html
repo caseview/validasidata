@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
+  <meta charset="UTF-8">
   <base target="_top">
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Konfirmasi Pendaftaran</title>
@@ -12,8 +13,78 @@
   <div class="container">
     <h2 style="text-align: center;">VALIDASI PENDAFTARAN SISWA BARU</h2>
     <h2 style="text-align: center;">SMPN 4 Rangkasbitung</h2>
+    
     <form id="myForm">
-      <button type="button" id="submitButton">Kirim Data</button>
+      
+      <label>No Pendaftaran</label>
+      <input type="text" id="noPendaftaran" placeholder="Masukkan 3 digit nomor">
+      <span id="noPendaftaranError" class="error-text"></span>
+
+      <label>NISN</label>
+      <input type="text" id="nisn" placeholder="Masukkan 10 digit NISN">
+      <span id="nisnError" class="error-text"></span>
+
+      <label>No KK</label>
+      <input type="text" id="noKK" placeholder="Masukkan 16 digit No KK">
+      <span id="noKKError" class="error-text"></span>
+
+      <label>NIK Siswa</label>
+      <input type="text" id="nikSiswa" placeholder="Masukkan 16 digit NIK">
+      <span id="nikSiswaError" class="error-text"></span>
+
+      <label>Asal Sekolah</label>
+      <input type="text" id="asalSekolah" placeholder="Contoh: SDN 1 RANGKASBITUNG">
+      <span id="asalSekolahError" class="error-text"></span>
+
+      <label>Nama Ibu Kandung</label>
+      <input type="text" id="namaIbu" placeholder="Nama Ibu Kandung">
+      <span id="namaIbuError" class="error-text"></span>
+
+      <label>Nama Lengkap Siswa</label>
+      <input type="text" id="nama" placeholder="Nama Lengkap Sesuai Ijazah">
+      <span id="namaError" class="error-text"></span>
+
+      <label>Jenis Kelamin</label>
+      <div id="jenisKelaminContainer" style="margin-bottom:15px;">
+          <input type="radio" name="jenisKelamin" id="jkL" value="Laki-Laki"> <label for="jkL" style="display:inline; font-weight:normal;">Laki-Laki</label>
+          &nbsp;&nbsp;&nbsp;
+          <input type="radio" name="jenisKelamin" id="jkP" value="Perempuan"> <label for="jkP" style="display:inline; font-weight:normal;">Perempuan</label>
+      </div>
+      <span id="jenisKelaminError" class="error-text"></span>
+
+      <hr style="margin: 20px 0; border: 0; border-top: 1px solid #ccc;">
+
+      <label>Foto Pendaftar & Lokasi GPS</label>
+      <button type="button" id="startCameraButton">Aktifkan Kamera & GPS</button>
+      <span id="gpsError" class="error-text"></span>
+
+      <div id="cameraContainer" style="display: none;">
+          <video id="videoElement" autoplay playsinline></video><br>
+          <button type="button" id="captureButton" style="margin-top:10px; background-color: #28a745;">Ambil Foto</button>
+      </div>
+      <canvas id="canvasElement" style="display: none;"></canvas>
+
+      <div id="previewContainer" style="display: none;">
+          <img id="photoPreview" src="#"><br>
+          <button type="button" id="recaptureButton" style="margin-top:10px; background-color: #dc3545;">Foto Ulang</button>
+      </div>
+      <span id="photoError" class="error-text"></span>
+
+      <hr style="margin: 20px 0; border: 0; border-top: 1px solid #ccc;">
+
+      <div class="declaration-container">
+          <input type="checkbox" id="declarationCheckbox">
+          <label for="declarationCheckbox">Saya menyatakan data yang diisi adalah benar.</label>
+      </div>
+      <span id="declarationError" class="error-text"></span>
+
+      <br>
+      
+      <button type="button" id="submitButton" style="width: 100%; padding: 15px;">Kirim Data</button>
+
+      <div id="spinner" class="spinner"></div>
+      <div id="statusMessage" style="display:none;"></div>
+
     </form>
   </div>
 
