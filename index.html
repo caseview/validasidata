@@ -1,40 +1,23 @@
 <!DOCTYPE html>
-<html lang="id">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+  <base target="_top">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Konfirmasi Pendaftaran</title>
+  
+  <link rel="stylesheet" href="css/style.css">
 </head>
-<body style="font-family: Arial, sans-serif; text-align: center; margin-top: 50px;">
+<body>
 
-    <h1 style="margin-bottom: 5px;">Login Validasi Data</h1>
-    <h3 style="margin-top: 0; color: #555;">Silakan masukkan sandi</h3>
+  <div class="container">
+    <h2 style="text-align: center;">VALIDASI PENDAFTARAN SISWA BARU</h2>
+    <h2 style="text-align: center;">SMPN 4 Rangkasbitung</h2>
+    <form id="myForm">
+      <button type="button" id="submitButton">Kirim Data</button>
+    </form>
+  </div>
 
-    <div style="margin-top: 30px;">
-        <input type="password" id="inputSandi" placeholder="Masukkan Sandi..." style="padding: 10px; width: 200px;">
-        <br><br>
-        <button onclick="cekLogin()" style="padding: 10px 20px; background-color: #007BFF; color: white; border: none; cursor: pointer;">Masuk</button>
-    </div>
+  <script src="js/script.js"></script>
 
-    <p id="pesanError" style="color: red; margin-top: 20px;"></p>
-
-    <script>
-        function cekLogin() {
-            var sandi = document.getElementById('inputSandi').value;
-            var pesan = document.getElementById('pesanError');
-
-            // Tentukan kata sandi atau token di sini
-            var sandiBenar = "SMPN1234";
-
-            if(sandi === sandiBenar) {
-                // Jika sandi benar, arahkan ke halaman validasi NISN
-                window.location.href = "validasi.html";
-            } else if (sandi === "") {
-                pesan.innerHTML = "Sandi tidak boleh kosong!";
-            } else {
-                pesan.innerHTML = "Sandi salah, silakan coba lagi.";
-            }
-        }
-    </script>
 </body>
 </html>
