@@ -17,19 +17,19 @@
     <form id="myForm">
       
       <label>No Pendaftaran</label>
-      <input type="text" id="noPendaftaran" placeholder="Masukkan 3 digit nomor">
+      <input type="text" id="noPendaftaran" name="noPendaftaran" required maxlength="3" pattern="\d{3}">
       <span id="noPendaftaranError" class="error-text"></span>
 
       <label>NISN</label>
-      <input type="text" id="nisn" placeholder="Masukkan 10 digit NISN">
+      <input type="text" id="nisn" name="nisn" required maxlength="10" pattern="\d{10}" title="NISN harus 10 digit angka.">
       <span id="nisnError" class="error-text"></span>
 
       <label>No KK</label>
-      <input type="text" id="noKK" placeholder="Masukkan 16 digit No KK">
+      <input type="text" id="noKK" name="noKK" required maxlength="16" pattern="\d{16}" title="No. KK harus 16 digit angka.">
       <span id="noKKError" class="error-text"></span>
 
       <label>NIK Siswa</label>
-      <input type="text" id="nikSiswa" placeholder="Masukkan 16 digit NIK">
+      <input type="text" id="nikSiswa" name="nikSiswa" required maxlength="16" pattern="\d{16}" title="NIK harus 16 digit angka.">
       <span id="nikSiswaError" class="error-text"></span>
 
       <label>Asal Sekolah</label>
