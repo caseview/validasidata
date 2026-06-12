@@ -146,3 +146,10 @@ video, canvas, #photoPreview {
     .form-row { flex-direction: column; gap: 0; }
     .half-width { width: 100%; }
 }
+
+/* --- TAMBAHAN UNTUK EFEK ERROR --- */
+.input-error {
+    border: 2px solid #e53e3e !important;
+    background-color: #fff5f5 !important;
+    transition: all 0.3s ease;
+}
