@@ -4,125 +4,158 @@
   <meta charset="UTF-8">
   <base target="_top">
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Validasi Data</title>
-  
+  <title>Validasi Data SMPN 4 Rangkasbitung</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
   <div class="container">
-<div style="text-align: center; margin-bottom: 20px;">
-    <img src="images/LOGO.png" alt="Logo SMPN 4" style="width: 120px; height: auto;">
-</div>
-<h2 style="text-align: center; margin-bottom: 5px;">VALIDASI PENDAFTARAN MURID BARU</h2>
-<h2 style="text-align: center; margin-top: 0; margin-bottom: 40px;">SMPN 4 Rangkasbitung</h2>
+    <div class="header-section">
+      <img src="images/LOGO.png" alt="Logo SMPN 4">
+      <h2 class="title-main">VALIDASI PENDAFTARAN MURID BARU</h2>
+      <h3 class="title-sub">SMPN 4 Rangkasbitung</h3>
+    </div>
     
     <form id="myForm">
       
-      <label>No Pendaftaran</label>
-      <input type="text" id="noPendaftaran" name="noPendaftaran" required maxlength="3" pattern="\d{3}">
-      <span id="noPendaftaranError" class="error-text"></span>
-
-      <label>NISN</label>
-      <input type="text" id="nisn" name="nisn" required maxlength="10" pattern="\d{10}" title="NISN harus 10 digit angka.">
-      <span id="nisnError" class="error-text"></span>
-
-      <label>No KK (No Kartu Keluarga)</label>
-      <input type="text" id="noKK" name="noKK" required maxlength="16" pattern="\d{16}" title="No. KK harus 16 digit angka.">
-      <span id="noKKError" class="error-text"></span>
-
-      <label>NIK Siswa</label>
-      <input type="text" id="nikSiswa" name="nikSiswa" required maxlength="16" pattern="\d{16}" title="NIK harus 16 digit angka.">
-      <span id="nikSiswaError" class="error-text"></span>
-
-      <label>Nama Lengkap Siswa</label>
-      <input type="text" id="nama" placeholder="Nama Lengkap Sesuai Ijazah">
-      <span id="namaError" class="error-text"></span>
-
-      <label>Jenis Kelamin</label>
-      <div id="jenisKelaminContainer" style="margin-bottom:15px;">
-          <input type="radio" name="jenisKelamin" id="jkL" value="Laki-Laki"> <label for="jkL" style="display:inline; font-weight:normal;">Laki-Laki</label>
-          &nbsp;&nbsp;&nbsp;
-          <input type="radio" name="jenisKelamin" id="jkP" value="Perempuan"> <label for="jkP" style="display:inline; font-weight:normal;">Perempuan</label>
+      <div class="form-group">
+        <label>No Pendaftaran</label>
+        <input type="text" id="noPendaftaran" placeholder="Masukkan 3 Digit No Pendaftaran">
+        <span id="noPendaftaranError" class="error-text"></span>
       </div>
-      <span id="jenisKelaminError" class="error-text"></span>
-      <br>
-      <label>Tgl Lahir Siswa</label>
-      <input type="date" name="tanggal_lahir" id="tgl_lahir" class="form-control" required="" onchange="hitungUsiaOtomatis(this, 'usia_input')">
-      
-      <label>Asal Sekolah</label>
-      <input type="text" id="asalSekolah" placeholder="Contoh: SDN 2 MUARA CIUJUNG BARAT">
-      <span id="asalSekolahError" class="error-text"></span>
 
-      <hr style="margin: 20px 0; border: 0; border-top: 1px solid #ccc;">
-      
-      <label>Nama Ibu Kandung</label>
-      <input type="text" id="namaIbu" placeholder="Nama Ibu Kandung">
-      <span id="namaIbuError" class="error-text"></span>
+      <div class="form-group">
+        <label>NISN</label>
+        <input type="text" id="nisn" placeholder="10 Digit NISN">
+        <span id="nisnError" class="error-text"></span>
+      </div>
 
-      <label>Pekerjaan Ibu Kandung</label>
-      <select name="pekerjaanIbu" class="form-select pekerjaan-select" required="">
-      <option value="">- Pilih -</option>
-        <option value="PNS">PNS</option>
-        <option value="TNI/POLRI">TNI/POLRI</option>
-        <option value="Pensiunan">Pensiunan</option>
-        <option value="Karyawan Swasta">Karyawan Swasta</option>
-        <option value="Wiraswasta">Wiraswasta</option>
-        <option value="Buruh">Buruh</option>
-        <option value="Petani">Petani</option>
-        <option value="Lainnya">Jasa lainnya (Manual)</option>
+      <div class="form-group">
+        <label>No Kartu Keluarga (KK)</label>
+        <input type="text" id="noKK" placeholder="16 Digit No KK">
+        <span id="noKKError" class="error-text"></span>
+      </div>
+
+      <div class="form-group">
+        <label>NIK Siswa</label>
+        <input type="text" id="nikSiswa" placeholder="16 Digit NIK Siswa">
+        <span id="nikSiswaError" class="error-text"></span>
+      </div>
+
+      <div class="form-group">
+        <label>Nama Lengkap Siswa</label>
+        <input type="text" id="nama" placeholder="Sesuai Ijazah / Akta Kelahiran">
+        <span id="namaError" class="error-text"></span>
+      </div>
+
+      <div class="form-group">
+        <label>Jenis Kelamin</label>
+        <div id="jenisKelaminContainer" class="radio-group">
+            <input type="radio" name="jenisKelamin" id="jkL" value="Laki-Laki"> 
+            <label for="jkL">Laki-Laki</label>
+            <input type="radio" name="jenisKelamin" id="jkP" value="Perempuan"> 
+            <label for="jkP">Perempuan</label>
+        </div>
+        <span id="jenisKelaminError" class="error-text"></span>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group half-width">
+          <label>Tanggal Lahir</label>
+          <input type="date" id="tgl_lahir" onchange="hitungUsiaOtomatis()">
+          <span id="tglLahirError" class="error-text"></span>
+        </div>
+        <div class="form-group half-width">
+          <label>Usia Siswa (Otomatis)</label>
+          <input type="text" id="usia_input" placeholder="Tahun Bulan" readonly style="background-color: #e9ecef;">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Asal Sekolah</label>
+        <input type="text" id="asalSekolah" placeholder="Contoh: SDN 2 MUARA CIUJUNG BARAT">
+        <span id="asalSekolahError" class="error-text"></span>
+      </div>
+
+      <hr>
+
+      <div class="form-group">
+        <label>Nama Ibu Kandung</label>
+        <input type="text" id="namaIbu" placeholder="Nama Ibu Sesuai KK">
+        <span id="namaIbuError" class="error-text"></span>
+      </div>
+
+      <div class="form-group">
+        <label>Pekerjaan Ibu Kandung</label>
+        <select id="pekerjaanIbu" class="form-select">
+          <option value="">-- Pilih Pekerjaan Ibu --</option>
+          <option value="PNS">PNS</option>
+          <option value="TNI/POLRI">TNI/POLRI</option>
+          <option value="Pensiunan">Pensiunan</option>
+          <option value="Karyawan Swasta">Karyawan Swasta</option>
+          <option value="Wiraswasta">Wiraswasta</option>
+          <option value="IRT">Ibu Rumah Tangga (IRT)</option>
+          <option value="Buruh">Buruh</option>
+          <option value="Petani">Petani</option>
+          <option value="Lainnya">Lainnya</option>
         </select>
-    
+        <span id="pekerjaanIbuError" class="error-text"></span>
+      </div>
 
-      <hr style="margin: 20px 0; border: 0; border-top: 1px solid #ccc;">
+      <hr>
 
-      <label>Nama Ayah Kandung</label>
-      <input type="text" id="namaAyah" placeholder="Nama Ayah Kandung">
-      <span id="namaAyahError" class="error-text"></span>
+      <div class="form-group">
+        <label>Nama Ayah Kandung</label>
+        <input type="text" id="namaAyah" placeholder="Nama Ayah Sesuai KK">
+        <span id="namaAyahError" class="error-text"></span>
+      </div>
 
-            <label>Pekerjaan Ayah Kandung</label>
-      <select name="pekerjaanAyah" class="form-select pekerjaan-select" required="">
-      <option value="">- Pilih -</option>
-        <option value="PNS">PNS</option>
-        <option value="TNI/POLRI">TNI/POLRI</option>
-        <option value="Pensiunan">Pensiunan</option>
-        <option value="Karyawan Swasta">Karyawan Swasta</option>
-        <option value="Wiraswasta">Wiraswasta</option>
-        <option value="IRT">IRT</option>
-        <option value="Buruh">Buruh</option>
-        <option value="Petani">Petani</option>
-        <option value="Lainnya">Jasa lainnya (Manual)</option>
+      <div class="form-group">
+        <label>Pekerjaan Ayah Kandung</label>
+        <select id="pekerjaanAyah" class="form-select">
+          <option value="">-- Pilih Pekerjaan Ayah --</option>
+          <option value="PNS">PNS</option>
+          <option value="TNI/POLRI">TNI/POLRI</option>
+          <option value="Pensiunan">Pensiunan</option>
+          <option value="Karyawan Swasta">Karyawan Swasta</option>
+          <option value="Wiraswasta">Wiraswasta</option>
+          <option value="Buruh">Buruh</option>
+          <option value="Petani">Petani</option>
+          <option value="Lainnya">Lainnya</option>
         </select>
+        <span id="pekerjaanAyahError" class="error-text"></span>
+      </div>
       
-      <hr style="margin: 20px 0; border: 0; border-top: 1px solid #ccc;">
+      <hr>
 
-      <label>Foto Pendaftar & Lokasi GPS</label>
-      <button type="button" id="startCameraButton">Aktifkan Kamera & GPS</button>
-      <span id="gpsError" class="error-text"></span>
+      <div class="form-group">
+        <label>Foto Pendaftar & Lokasi GPS</label>
+        <button type="button" id="startCameraButton" class="btn-secondary">Aktifkan Kamera & GPS</button>
+        <span id="gpsError" class="error-text"></span>
 
-      <div id="cameraContainer" style="display: none;">
-          <video id="videoElement" autoplay playsinline></video><br>
-          <button type="button" id="captureButton" style="margin-top:10px; background-color: #28a745;">Ambil Foto</button>
+        <div id="cameraContainer" style="display: none; text-align: center;">
+            <video id="videoElement" autoplay playsinline></video><br>
+            <button type="button" id="captureButton" class="btn-success">Ambil Foto</button>
+        </div>
+        <canvas id="canvasElement" style="display: none;"></canvas>
+
+        <div id="previewContainer" style="display: none; text-align: center;">
+            <img id="photoPreview" src="#"><br>
+            <button type="button" id="recaptureButton" class="btn-danger">Foto Ulang</button>
+        </div>
+        <span id="photoError" class="error-text"></span>
       </div>
-      <canvas id="canvasElement" style="display: none;"></canvas>
 
-      <div id="previewContainer" style="display: none;">
-          <img id="photoPreview" src="#"><br>
-          <button type="button" id="recaptureButton" style="margin-top:10px; background-color: #dc3545;">Foto Ulang</button>
-      </div>
-      <span id="photoError" class="error-text"></span>
-
-      <hr style="margin: 20px 0; border: 0; border-top: 1px solid #ccc;">
+      <hr>
 
       <div class="declaration-container">
           <input type="checkbox" id="declarationCheckbox">
-          <label for="declarationCheckbox">Saya menyatakan data yang diisi adalah benar.</label>
+          <label for="declarationCheckbox">Saya menyatakan bahwa data yang diisi adalah benar dan dapat dipertanggungjawabkan.</label>
       </div>
       <span id="declarationError" class="error-text"></span>
 
-      <br>
-      
-      <button type="button" id="submitButton" style="width: 100%; padding: 15px;">Kirim Data</button>
+      <button type="button" id="submitButton" class="btn-primary">Kirim Data Pendaftaran</button>
 
       <div id="spinner" class="spinner"></div>
       <div id="statusMessage" style="display:none;"></div>
