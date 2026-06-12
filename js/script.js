@@ -4,11 +4,18 @@ const noPendaftaranInput = document.getElementById('noPendaftaran');
 const nisnInput = document.getElementById('nisn');
 const noKKInput = document.getElementById('noKK');
 const nikSiswaInput = document.getElementById('nikSiswa');
+const namaInput = document.getElementById('nama');
+const tglLahirInput = document.getElementById('tgl_lahir');
+const usiaInput = document.getElementById('usia_input');
 const asalSekolahInput = document.getElementById('asalSekolah');
 const namaIbuInput = document.getElementById('namaIbu');
-const namaInput = document.getElementById('nama');
+const pekerjaanIbuInput = document.getElementById('pekerjaanIbu');
+const namaAyahInput = document.getElementById('namaAyah');
+const pekerjaanAyahInput = document.getElementById('pekerjaanAyah');
 const jenisKelaminContainer = document.getElementById('jenisKelaminContainer');
 const declarationCheckbox = document.getElementById('declarationCheckbox');
+
+// Elemen Kamera
 const startCameraButton = document.getElementById('startCameraButton');
 const cameraContainer = document.getElementById('cameraContainer');
 const videoElement = document.getElementById('videoElement');
@@ -20,155 +27,116 @@ const recaptureButton = document.getElementById('recaptureButton');
 const submitButton = document.getElementById('submitButton');
 const spinner = document.getElementById('spinner');
 const statusMessage = document.getElementById('statusMessage');
-const noPendaftaranError = document.getElementById('noPendaftaranError');
-const nisnError = document.getElementById('nisnError');
-const noKKError = document.getElementById('noKKError');
-const nikSiswaError = document.getElementById('nikSiswaError');
-const asalSekolahError = document.getElementById('asalSekolahError');
-const namaIbuError = document.getElementById('namaIbuError');
-const namaError = document.getElementById('namaError');
-const jenisKelaminError = document.getElementById('jenisKelaminError');
-const photoError = document.getElementById('photoError');
-const gpsError = document.getElementById('gpsError');
-const declarationError = document.getElementById('declarationError');
-const scriptUrl = 'https://script.google.com/macros/s/AKfycbw_OJT7TctYrJBwYGBtQUsRQlXj7PL_6OtJsEsHEXmeZpbawiSIbauX9t8MqZsQV_Gg/exec';
 
-// Variabel state
+// URL APPS SCRIPT ANDA
+const scriptUrl = 'MASUKKAN_URL_WEB_APP_APPS_SCRIPT_ANDA_DISINI';
+
 let stream;
 let capturedImageData = null;
 let locationData = { latitude: null, longitude: null };
 
-// --- FUNGSI VALIDASI SAAT SUBMIT ---
+// --- 2. FUNGSI HITUNG USIA OTOMATIS ---
+function hitungUsiaOtomatis() {
+    const tglLahirStr = tglLahirInput.value;
+    if (!tglLahirStr) return;
+    const tglLahir = new Date(tglLahirStr);
+    const hariIni = new Date();
+    let tahun = hariIni.getFullYear() - tglLahir.getFullYear();
+    let bulan = hariIni.getMonth() - tglLahir.getMonth();
+    if (bulan < 0 || (bulan === 0 && hariIni.getDate() < tglLahir.getDate())) {
+        tahun--;
+        bulan += 12;
+    }
+    usiaInput.value = `${tahun} Tahun, ${bulan} Bulan`;
+}
+
+// --- 3. KEAMANAN INPUT (HANYA ANGKA / HANYA HURUF) ---
+// Paksa input hanya angka
+function enforceNumericInput(inputElement) {
+    inputElement.addEventListener('input', function() { this.value = this.value.replace(/[^\d]/g, ''); });
+}
+enforceNumericInput(noPendaftaranInput);
+enforceNumericInput(nisnInput);
+enforceNumericInput(noKKInput);
+enforceNumericInput(nikSiswaInput);
+
+// Paksa input nama HANYA huruf dan spasi (TIDAK BISA ANGKA)
+function enforceTextOnly(inputElement) {
+    inputElement.addEventListener('input', function() { 
+        this.value = this.value.replace(/[^a-zA-Z\s.'-]/g, '').toUpperCase(); 
+    });
+}
+enforceTextOnly(namaInput);
+enforceTextOnly(namaIbuInput);
+enforceTextOnly(namaAyahInput);
+
+// Asal sekolah bisa ada angka (SDN 4), jadi hanya jadikan huruf besar
+asalSekolahInput.addEventListener('input', function() { this.value = this.value.toUpperCase(); });
+
+// --- 4. VALIDASI WAJIB ISI SEBELUM SUBMIT ---
+function clearMessages() {
+    document.querySelectorAll('.error-text').forEach(el => el.textContent = '');
+    statusMessage.style.display = 'none';
+}
+
 function validateForm() {
     clearMessages();
     let isValid = true;
 
-    // 1. Validasi Input Teks
-    if (!/^\d{3}$/.test(noPendaftaranInput.value.trim())) {
-        noPendaftaranError.textContent = 'No Pendaftaran wajib diisi dan harus 3 digit angka.';
-        isValid = false;
-    }
-    if (!/^\d{10}$/.test(nisnInput.value.trim())) {
-        nisnError.textContent = 'NISN wajib diisi dan harus 10 digit angka.';
-        isValid = false;
-    }
-    if (!/^\d{16}$/.test(noKKInput.value.trim())) {
-        noKKError.textContent = 'No Kartu Keluarga wajib diisi dan harus 16 digit angka.';
-        isValid = false;
-    }
-    if (!/^\d{16}$/.test(nikSiswaInput.value.trim())) {
-        nikSiswaError.textContent = 'NIK Siswa wajib diisi dan harus 16 digit angka.';
-        isValid = false;
-    }
-    if (asalSekolahInput.value.trim() === '') {
-        asalSekolahError.textContent = 'Asal Sekolah wajib diisi.';
-        isValid = false;
-    }
-    if (namaIbuInput.value.trim() === '') {
-        namaIbuError.textContent = 'Nama Ibu Kandung wajib diisi.';
-        isValid = false;
-    }
-    if (namaInput.value.trim() === '') {
-        namaError.textContent = 'Nama Lengkap Siswa wajib diisi.';
-        isValid = false;
-    }
-
-    // 2. Validasi Radio Button Jenis Kelamin
-    const jenisKelaminChecked = document.querySelector('input[name="jenisKelamin"]:checked');
-    if (!jenisKelaminChecked) {
-        jenisKelaminError.textContent = 'Jenis Kelamin wajib dipilih.';
-        isValid = false;
-    }
-
-    // 3. Validasi Foto
-    if (!capturedImageData) {
-        photoError.textContent = 'Foto wajib diambil.';
-        isValid = false;
-    }
-
-    // 4. Validasi Checkbox Pernyataan (KODE DIPINDAHKAN KE POSISI YANG BENAR)
-    if (!declarationCheckbox.checked) {
-        declarationError.textContent = 'Anda harus menyetujui pernyataan ini untuk melanjutkan.';
-        isValid = false;
-    }
+    if (!/^\d{3}$/.test(noPendaftaranInput.value.trim())) { document.getElementById('noPendaftaranError').textContent = 'Wajib 3 digit angka.'; isValid = false; }
+    if (!/^\d{10}$/.test(nisnInput.value.trim())) { document.getElementById('nisnError').textContent = 'Wajib 10 digit angka.'; isValid = false; }
+    if (!/^\d{16}$/.test(noKKInput.value.trim())) { document.getElementById('noKKError').textContent = 'Wajib 16 digit angka.'; isValid = false; }
+    if (!/^\d{16}$/.test(nikSiswaInput.value.trim())) { document.getElementById('nikSiswaError').textContent = 'Wajib 16 digit angka.'; isValid = false; }
+    if (namaInput.value.trim() === '') { document.getElementById('namaError').textContent = 'Wajib diisi.'; isValid = false; }
+    if (tglLahirInput.value === '') { document.getElementById('tglLahirError').textContent = 'Pilih tanggal lahir.'; isValid = false; }
+    if (asalSekolahInput.value.trim() === '') { document.getElementById('asalSekolahError').textContent = 'Wajib diisi.'; isValid = false; }
     
-    // HANYA ADA SATU RETURN DI AKHIR FUNGSI
+    // Data Orang Tua
+    if (namaIbuInput.value.trim() === '') { document.getElementById('namaIbuError').textContent = 'Wajib diisi.'; isValid = false; }
+    if (pekerjaanIbuInput.value === '') { document.getElementById('pekerjaanIbuError').textContent = 'Pilih salah satu.'; isValid = false; }
+    if (namaAyahInput.value.trim() === '') { document.getElementById('namaAyahError').textContent = 'Wajib diisi.'; isValid = false; }
+    if (pekerjaanAyahInput.value === '') { document.getElementById('pekerjaanAyahError').textContent = 'Pilih salah satu.'; isValid = false; }
+
+    const jenisKelaminChecked = document.querySelector('input[name="jenisKelamin"]:checked');
+    if (!jenisKelaminChecked) { document.getElementById('jenisKelaminError').textContent = 'Pilih jenis kelamin.'; isValid = false; }
+    if (!capturedImageData) { document.getElementById('photoError').textContent = 'Foto wajah & lokasi wajib diambil.'; isValid = false; }
+    if (!declarationCheckbox.checked) { document.getElementById('declarationError').textContent = 'Wajib dicentang untuk melanjutkan.'; isValid = false; }
+    
     return isValid;
 }
 
-// --- LOGIKA VALIDASI REAL-TIME --- (SEMUA DIJADIKAN SATU DI SINI)
-noPendaftaranInput.addEventListener('input', () => {
-    if (/^\d{3}$/.test(noPendaftaranInput.value.trim())) {
-        noPendaftaranError.textContent = '';
-    }
-});
-nisnInput.addEventListener('input', () => {
-    if (/^\d{10}$/.test(nisnInput.value.trim())) {
-        nisnError.textContent = '';
-    }
-});
-noKKInput.addEventListener('input', () => {
-    if (/^\d{16}$/.test(noKKInput.value.trim())) {
-        noKKError.textContent = '';
-    }
-});
-nikSiswaInput.addEventListener('input', () => {
-    if (/^\d{16}$/.test(nikSiswaInput.value.trim())) {
-        nikSiswaError.textContent = '';
-    }
-});
-asalSekolahInput.addEventListener('input', () => {
-    if (asalSekolahInput.value.trim() !== '') {
-        asalSekolahError.textContent = '';
-    }
-});
-namaIbuInput.addEventListener('input', () => {
-    if (namaIbuInput.value.trim() !== '') {
-        namaIbuError.textContent = '';
-    }
-});
-namaInput.addEventListener('input', () => {
-    if (namaInput.value.trim() !== '') {
-        namaError.textContent = '';
-    }
-});
-jenisKelaminContainer.addEventListener('change', () => {
-    jenisKelaminError.textContent = '';
-});
-declarationCheckbox.addEventListener('change', () => {
-    if (declarationCheckbox.checked) {
-        declarationError.textContent = '';
-    }
-});
-
-// --- FUNGSI PENGIRIMAN DATA ---
+// --- 5. FUNGSI PENGIRIMAN DATA (FETCH) ---
 submitButton.addEventListener('click', () => {
     if (!validateForm()) {
-        statusMessage.textContent = 'Harap perbaiki semua error sebelum mengirim.';
+        statusMessage.textContent = 'Gagal mengirim. Silakan lengkapi kolom yang berwarna merah.';
         statusMessage.className = 'error';
         statusMessage.style.display = 'block';
-        return;
+        return; // Menghentikan pengiriman jika ada yang kosong
     }
 
     spinner.style.display = 'block';
     submitButton.disabled = true;
+    statusMessage.style.display = 'none';
     
-    const noPendaftaran = noPendaftaranInput.value.trim();
     const namaSiswa = namaInput.value.trim().replace(/\s+/g, '_');
-    const fileName = `${noPendaftaran}_${namaSiswa}.jpg`;
+    const fileName = `${noPendaftaranInput.value.trim()}_${namaSiswa}.jpg`;
     
     const formDataPayload = {
-        noPendaftaran: noPendaftaran,
+        noPendaftaran: noPendaftaranInput.value.trim(),
         nisn: nisnInput.value.trim(),
         noKK: noKKInput.value.trim(),
         nikSiswa: nikSiswaInput.value.trim(),
+        nama: namaInput.value.trim(),
+        jenisKelamin: document.querySelector('input[name="jenisKelamin"]:checked').value,
+        tglLahir: tglLahirInput.value,
         asalSekolah: asalSekolahInput.value.trim(),
         namaIbu: namaIbuInput.value.trim(),
-        nama: namaInput.value.trim(),
-        jenisKelamin: document.querySelector('input[name="jenisKelamin"]:checked').value
+        pekerjaanIbu: pekerjaanIbuInput.value,
+        namaAyah: namaAyahInput.value.trim(),
+        pekerjaanAyah: pekerjaanAyahInput.value
     };
-    
-const payloadData = {
+
+    const payloadData = {
         formData: formDataPayload,
         imageDataUrlString: capturedImageData,
         clientFileName: fileName,
@@ -187,16 +155,16 @@ const payloadData = {
             statusMessage.textContent = response.message;
             statusMessage.className = 'success';
             myForm.reset();
+            usiaInput.value = '';
             capturedImageData = null;
             photoPreview.src = "#";
             previewContainer.style.display = 'none';
             startCameraButton.style.display = 'inline-block';
-            startCameraButton.disabled = false;
             startCameraButton.textContent = "Aktifkan Kamera & GPS";
             locationData = { latitude: null, longitude: null };
             stopCameraStream();
         } else {
-            statusMessage.textContent = "Error dari Server: " + response.message;
+            statusMessage.textContent = "Error Server: " + response.message;
             statusMessage.className = 'error';
         }
         statusMessage.style.display = 'block';
@@ -204,109 +172,57 @@ const payloadData = {
     .catch(error => {
         spinner.style.display = 'none';
         submitButton.disabled = false;
-        statusMessage.textContent = "Error Jaringan: " + error.message;
+        statusMessage.textContent = "Error Jaringan. Periksa koneksi internet Anda.";
         statusMessage.className = 'error';
         statusMessage.style.display = 'block';
-        console.error("Fetch error:", error);
     });
-
 });
 
-// --- FUNGSI UTILITAS & EVENT LISTENER LAINNYA ---
-function clearMessages() {
-    document.querySelectorAll('.error-text').forEach(el => el.textContent = '');
-    if(statusMessage) {
-      statusMessage.style.display = 'none';
-      statusMessage.textContent = '';
-      statusMessage.className = '';
-    }
-}
-
-function enforceNumericInput(inputElement) {
-    inputElement.addEventListener('input', function() { this.value = this.value.replace(/[^\d]/g, ''); });
-}
-enforceNumericInput(noPendaftaranInput);
-enforceNumericInput(nisnInput);
-enforceNumericInput(noKKInput);
-enforceNumericInput(nikSiswaInput);
-
-asalSekolahInput.addEventListener('input', function() { this.value = this.value.toUpperCase(); });
-namaInput.addEventListener('input', function() { this.value = this.value.replace(/[^a-zA-Z\s.-]/g, '').toUpperCase(); });
-namaIbuInput.addEventListener('input', function() { this.value = this.value.replace(/[^a-zA-Z\s.-]/g, '').toUpperCase(); });
-
+// --- 6. LOGIKA KAMERA & LOKASI ---
 startCameraButton.addEventListener('click', async () => {
     clearMessages();
     startCameraButton.disabled = true;
     startCameraButton.textContent = "Memproses GPS...";
     try {
         locationData = await new Promise((resolve, reject) => {
-            if (!navigator.geolocation) { reject(new Error("Geolocation tidak didukung browser ini.")); return; }
+            if (!navigator.geolocation) { reject(new Error("Browser tidak mendukung GPS.")); return; }
             navigator.geolocation.getCurrentPosition(
-                (position) => resolve({ latitude: position.coords.latitude, longitude: position.coords.longitude }),
-                (error) => reject(error),
-                { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+                (pos) => resolve({ latitude: pos.coords.latitude, longitude: pos.coords.longitude }),
+                (err) => reject(err), { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
             );
         });
-        if (locationData.latitude && locationData.longitude) {
-            statusMessage.textContent = `GPS Aktif. Mengaktifkan kamera...`;
-            statusMessage.className = 'success';
-            statusMessage.style.display = 'block';
+        if (locationData.latitude) {
+            startCameraButton.style.display = 'none';
+            cameraContainer.style.display = 'block';
             stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
             videoElement.srcObject = stream;
-            cameraContainer.style.display = 'block';
-            captureButton.style.display = 'inline-block';
-            startCameraButton.style.display = 'none';
-            previewContainer.style.display = 'none';
         }
     } catch (error) {
-        console.error("Error accessing GPS/Camera: ", error);
-        let errMsg = "Gagal membuka kamera. Pastikan GPS aktif dan izin lokasi/kamera diberikan.";
-        if (error && error.code) {
-            if (error.code === 1) errMsg = "Izin akses lokasi/kamera ditolak oleh pengguna.";
-            if (error.code === 2) errMsg = "Posisi tidak tersedia (GPS mati atau tidak ada sinyal).";
-            if (error.code === 3) errMsg = "Waktu tunggu permintaan lokasi habis.";
-        }
-        gpsError.textContent = errMsg;
+        document.getElementById('gpsError').textContent = "Gagal membuka kamera. Pastikan GPS & izin Kamera aktif.";
         startCameraButton.disabled = false;
         startCameraButton.textContent = "Aktifkan Kamera & GPS";
-        locationData = { latitude: null, longitude: null };
     }
 });
 
 captureButton.addEventListener('click', () => {
     canvasElement.width = videoElement.videoWidth;
     canvasElement.height = videoElement.videoHeight;
-    const context = canvasElement.getContext('2d');
-    context.drawImage(videoElement, 0, 0, canvasElement.width, canvasElement.height);
-    let quality = 0.9;
-    let dataUrl = canvasElement.toDataURL('image/jpeg', quality);
-    const MAX_LENGTH = 2500000;
-    while (dataUrl.length > MAX_LENGTH && quality > 0.15) {
-        quality -= 0.1;
-        dataUrl = canvasElement.toDataURL('image/jpeg', quality);
-    }
-    capturedImageData = dataUrl;
-    photoPreview.src = dataUrl;
+    canvasElement.getContext('2d').drawImage(videoElement, 0, 0);
+    capturedImageData = canvasElement.toDataURL('image/jpeg', 0.8);
+    photoPreview.src = capturedImageData;
     cameraContainer.style.display = 'none';
     previewContainer.style.display = 'block';
-    photoError.textContent = ''; // Hapus error foto setelah berhasil
+    document.getElementById('photoError').textContent = '';
     stopCameraStream();
 });
 
 recaptureButton.addEventListener('click', () => {
     capturedImageData = null;
-    photoPreview.src = "#";
     previewContainer.style.display = 'none';
-    startCameraButton.style.display = 'inline-block';
-    startCameraButton.disabled = false;
-    startCameraButton.textContent = "Aktifkan Kamera & GPS";
-    videoElement.srcObject = null;
-    stopCameraStream();
+    cameraContainer.style.display = 'block';
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } }).then(s => { stream = s; videoElement.srcObject = stream; });
 });
 
 function stopCameraStream() {
-    if (stream) {
-        stream.getTracks().forEach(track => track.stop());
-        stream = null;
-    }
+    if (stream) { stream.getTracks().forEach(track => track.stop()); stream = null; }
 }
