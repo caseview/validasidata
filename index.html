@@ -21,25 +21,25 @@
       
       <div class="form-group">
         <label>No Pendaftaran</label>
-        <input type="text" id="noPendaftaran" placeholder="Masukkan 3 Digit No Pendaftaran">
+        <input type="text" id="noPendaftaran" required maxlength="3" pattern="\d{3}" placeholder="Masukkan 3 Digit No Pendaftaran">
         <span id="noPendaftaranError" class="error-text"></span>
       </div>
 
       <div class="form-group">
         <label>NISN</label>
-        <input type="text" id="nisn" placeholder="10 Digit NISN">
+        <input type="text" id="nisn" required maxlength="10" pattern="\d{10}" placeholder="10 Digit NISN">
         <span id="nisnError" class="error-text"></span>
       </div>
 
       <div class="form-group">
         <label>No Kartu Keluarga (KK)</label>
-        <input type="text" id="noKK" placeholder="16 Digit No KK">
+        <input type="text" id="noKK" required maxlength="16" pattern="\d{16}" placeholder="16 Digit No KK">
         <span id="noKKError" class="error-text"></span>
       </div>
 
       <div class="form-group">
         <label>NIK Siswa</label>
-        <input type="text" id="nikSiswa" placeholder="16 Digit NIK Siswa">
+        <input type="text" id="nikSiswa" required maxlength="16" pattern="\d{16}" placeholder="16 Digit NIK Siswa">
         <span id="nikSiswaError" class="error-text"></span>
       </div>
 
