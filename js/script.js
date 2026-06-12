@@ -29,7 +29,7 @@ const spinner = document.getElementById('spinner');
 const statusMessage = document.getElementById('statusMessage');
 
 // URL APPS SCRIPT ANDA
-const scriptUrl = 'MASUKKAN_URL_WEB_APP_APPS_SCRIPT_ANDA_DISINI';
+const scriptUrl = 'https://script.google.com/macros/s/AKfycbw_OJT7TctYrJBwYGBtQUsRQlXj7PL_6OtJsEsHEXmeZpbawiSIbauX9t8MqZsQV_Gg/exec';
 
 let stream;
 let capturedImageData = null;
@@ -121,7 +121,7 @@ submitButton.addEventListener('click', () => {
     const namaSiswa = namaInput.value.trim().replace(/\s+/g, '_');
     const fileName = `${noPendaftaranInput.value.trim()}_${namaSiswa}.jpg`;
     
-    const formDataPayload = {
+const formDataPayload = {
         noPendaftaran: noPendaftaranInput.value.trim(),
         nisn: nisnInput.value.trim(),
         noKK: noKKInput.value.trim(),
@@ -129,13 +129,14 @@ submitButton.addEventListener('click', () => {
         nama: namaInput.value.trim(),
         jenisKelamin: document.querySelector('input[name="jenisKelamin"]:checked').value,
         tglLahir: tglLahirInput.value,
+        usia: usiaInput.value, // <--- INI TAMBAHAN BARUNYA
         asalSekolah: asalSekolahInput.value.trim(),
         namaIbu: namaIbuInput.value.trim(),
         pekerjaanIbu: pekerjaanIbuInput.value,
         namaAyah: namaAyahInput.value.trim(),
         pekerjaanAyah: pekerjaanAyahInput.value
     };
-
+    
     const payloadData = {
         formData: formDataPayload,
         imageDataUrlString: capturedImageData,
