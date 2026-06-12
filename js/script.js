@@ -28,8 +28,8 @@ const submitButton = document.getElementById('submitButton');
 const spinner = document.getElementById('spinner');
 const statusMessage = document.getElementById('statusMessage');
 
-// URL APPS SCRIPT ANDA
-const scriptUrl = 'https://script.google.com/macros/s/AKfycbw_OJT7TctYrJBwYGBtQUsRQlXj7PL_6OtJsEsHEXmeZpbawiSIbauX9t8MqZsQV_Gg/exec';
+// PENTING: MASUKKAN URL APPS SCRIPT ANDA DI SINI
+const scriptUrl = 'MASUKKAN_URL_WEB_APP_APPS_SCRIPT_ANDA_DISINI';
 
 let stream;
 let capturedImageData = null;
@@ -50,8 +50,7 @@ function hitungUsiaOtomatis() {
     usiaInput.value = `${tahun} Tahun, ${bulan} Bulan`;
 }
 
-// --- 3. KEAMANAN INPUT (HANYA ANGKA / HANYA HURUF) ---
-// Paksa input hanya angka
+// --- 3. KEAMANAN INPUT ---
 function enforceNumericInput(inputElement) {
     inputElement.addEventListener('input', function() { this.value = this.value.replace(/[^\d]/g, ''); });
 }
@@ -60,7 +59,6 @@ enforceNumericInput(nisnInput);
 enforceNumericInput(noKKInput);
 enforceNumericInput(nikSiswaInput);
 
-// Paksa input nama HANYA huruf dan spasi (TIDAK BISA ANGKA)
 function enforceTextOnly(inputElement) {
     inputElement.addEventListener('input', function() { 
         this.value = this.value.replace(/[^a-zA-Z\s.'-]/g, '').toUpperCase(); 
@@ -70,59 +68,50 @@ enforceTextOnly(namaInput);
 enforceTextOnly(namaIbuInput);
 enforceTextOnly(namaAyahInput);
 
-// Asal sekolah bisa ada angka (SDN 4), jadi hanya jadikan huruf besar
 asalSekolahInput.addEventListener('input', function() { this.value = this.value.toUpperCase(); });
 
 // --- 4. VALIDASI & REAL-TIME ERROR CLEARING ---
-
-// Fungsi memunculkan pesan error dan garis merah
 function showError(inputElement, errorId, message) {
     document.getElementById(errorId).textContent = message;
     if(inputElement) inputElement.classList.add('input-error');
 }
 
-// Fungsi menghilangkan pesan error dan mengembalikan garis ke warna hitam/normal
 function clearError(inputElement, errorId) {
     document.getElementById(errorId).textContent = '';
     if(inputElement) inputElement.classList.remove('input-error');
 }
 
-// Menghapus semua error sekaligus (saat reload atau sukses kirim)
 function clearMessages() {
     document.querySelectorAll('.error-text').forEach(el => el.textContent = '');
     document.querySelectorAll('.input-error').forEach(el => el.classList.remove('input-error'));
-    statusMessage.style.display = 'none';
+    if(statusMessage) statusMessage.style.display = 'none';
 }
 
-// Mencegah munculnya error saat halaman baru saja direload
 window.addEventListener('load', clearMessages);
 
-// --- LOGIKA REAL-TIME (Menghilang otomatis saat diketik) ---
-noPendaftaranInput.addEventListener('input', function() { if (/^\d{3}$/.test(this.value.trim())) clearError(this, 'noPendaftaranError'); });
-nisnInput.addEventListener('input', function() { if (/^\d{10}$/.test(this.value.trim())) clearError(this, 'nisnError'); });
-noKKInput.addEventListener('input', function() { if (/^\d{16}$/.test(this.value.trim())) clearError(this, 'noKKError'); });
-nikSiswaInput.addEventListener('input', function() { if (/^\d{16}$/.test(this.value.trim())) clearError(this, 'nikSiswaError'); });
-namaInput.addEventListener('input', function() { if (this.value.trim() !== '') clearError(this, 'namaError'); });
-tglLahirInput.addEventListener('change', function() { if (this.value !== '') clearError(this, 'tglLahirError'); });
-asalSekolahInput.addEventListener('input', function() { if (this.value.trim() !== '') clearError(this, 'asalSekolahError'); });
+// Hapus error SECARA INSTAN saat user mulai mengetik apapun
+noPendaftaranInput.addEventListener('input', function() { clearError(this, 'noPendaftaranError'); });
+nisnInput.addEventListener('input', function() { clearError(this, 'nisnError'); });
+noKKInput.addEventListener('input', function() { clearError(this, 'noKKError'); });
+nikSiswaInput.addEventListener('input', function() { clearError(this, 'nikSiswaError'); });
+namaInput.addEventListener('input', function() { clearError(this, 'namaError'); });
+tglLahirInput.addEventListener('change', function() { clearError(this, 'tglLahirError'); hitungUsiaOtomatis(); });
+asalSekolahInput.addEventListener('input', function() { clearError(this, 'asalSekolahError'); });
 
-namaIbuInput.addEventListener('input', function() { if (this.value.trim() !== '') clearError(this, 'namaIbuError'); });
-pekerjaanIbuInput.addEventListener('change', function() { if (this.value !== '') clearError(this, 'pekerjaanIbuError'); });
-namaAyahInput.addEventListener('input', function() { if (this.value.trim() !== '') clearError(this, 'namaAyahError'); });
-pekerjaanAyahInput.addEventListener('change', function() { if (this.value !== '') clearError(this, 'pekerjaanAyahError'); });
+namaIbuInput.addEventListener('input', function() { clearError(this, 'namaIbuError'); });
+pekerjaanIbuInput.addEventListener('change', function() { clearError(this, 'pekerjaanIbuError'); });
+namaAyahInput.addEventListener('input', function() { clearError(this, 'namaAyahError'); });
+pekerjaanAyahInput.addEventListener('change', function() { clearError(this, 'pekerjaanAyahError'); });
 
-// Logika Real-time untuk Radio Button (Jenis Kelamin)
 const jkRadios = document.querySelectorAll('input[name="jenisKelamin"]');
 jkRadios.forEach(radio => radio.addEventListener('change', () => {
     clearError(document.getElementById('jenisKelaminContainer'), 'jenisKelaminError');
 }));
 
-// Logika Real-time untuk Checkbox Deklarasi
 declarationCheckbox.addEventListener('change', function() {
     if (this.checked) clearError(null, 'declarationError');
 });
 
-// --- FUNGSI VALIDASI UTAMA (Saat tombol ditekan) ---
 function validateForm() {
     clearMessages();
     let isValid = true;
@@ -135,7 +124,6 @@ function validateForm() {
     if (tglLahirInput.value === '') { showError(tglLahirInput, 'tglLahirError', 'Pilih tanggal lahir.'); isValid = false; }
     if (asalSekolahInput.value.trim() === '') { showError(asalSekolahInput, 'asalSekolahError', 'Wajib diisi.'); isValid = false; }
     
-    // Data Orang Tua
     if (namaIbuInput.value.trim() === '') { showError(namaIbuInput, 'namaIbuError', 'Wajib diisi.'); isValid = false; }
     if (pekerjaanIbuInput.value === '') { showError(pekerjaanIbuInput, 'pekerjaanIbuError', 'Pilih salah satu.'); isValid = false; }
     if (namaAyahInput.value.trim() === '') { showError(namaAyahInput, 'namaAyahError', 'Wajib diisi.'); isValid = false; }
@@ -152,10 +140,10 @@ function validateForm() {
 // --- 5. FUNGSI PENGIRIMAN DATA (FETCH) ---
 submitButton.addEventListener('click', () => {
     if (!validateForm()) {
-        statusMessage.textContent = 'Gagal mengirim. Silakan lengkapi kolom yang berwarna merah.';
+        statusMessage.textContent = 'Gagal mengirim. Silakan periksa kembali kolom yang berwarna merah.';
         statusMessage.className = 'error';
         statusMessage.style.display = 'block';
-        return; // Menghentikan pengiriman jika ada yang kosong
+        return; 
     }
 
     spinner.style.display = 'block';
@@ -165,7 +153,7 @@ submitButton.addEventListener('click', () => {
     const namaSiswa = namaInput.value.trim().replace(/\s+/g, '_');
     const fileName = `${noPendaftaranInput.value.trim()}_${namaSiswa}.jpg`;
     
-const formDataPayload = {
+    const formDataPayload = {
         noPendaftaran: noPendaftaranInput.value.trim(),
         nisn: nisnInput.value.trim(),
         noKK: noKKInput.value.trim(),
@@ -173,14 +161,14 @@ const formDataPayload = {
         nama: namaInput.value.trim(),
         jenisKelamin: document.querySelector('input[name="jenisKelamin"]:checked').value,
         tglLahir: tglLahirInput.value,
-        usia: usiaInput.value, // <--- INI TAMBAHAN BARUNYA
+        usia: usiaInput.value,
         asalSekolah: asalSekolahInput.value.trim(),
         namaIbu: namaIbuInput.value.trim(),
         pekerjaanIbu: pekerjaanIbuInput.value,
         namaAyah: namaAyahInput.value.trim(),
         pekerjaanAyah: pekerjaanAyahInput.value
     };
-    
+
     const payloadData = {
         formData: formDataPayload,
         imageDataUrlString: capturedImageData,
