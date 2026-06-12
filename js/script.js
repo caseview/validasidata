@@ -73,32 +73,76 @@ enforceTextOnly(namaAyahInput);
 // Asal sekolah bisa ada angka (SDN 4), jadi hanya jadikan huruf besar
 asalSekolahInput.addEventListener('input', function() { this.value = this.value.toUpperCase(); });
 
-// --- 4. VALIDASI WAJIB ISI SEBELUM SUBMIT ---
+// --- 4. VALIDASI & REAL-TIME ERROR CLEARING ---
+
+// Fungsi memunculkan pesan error dan garis merah
+function showError(inputElement, errorId, message) {
+    document.getElementById(errorId).textContent = message;
+    if(inputElement) inputElement.classList.add('input-error');
+}
+
+// Fungsi menghilangkan pesan error dan mengembalikan garis ke warna hitam/normal
+function clearError(inputElement, errorId) {
+    document.getElementById(errorId).textContent = '';
+    if(inputElement) inputElement.classList.remove('input-error');
+}
+
+// Menghapus semua error sekaligus (saat reload atau sukses kirim)
 function clearMessages() {
     document.querySelectorAll('.error-text').forEach(el => el.textContent = '');
+    document.querySelectorAll('.input-error').forEach(el => el.classList.remove('input-error'));
     statusMessage.style.display = 'none';
 }
 
+// Mencegah munculnya error saat halaman baru saja direload
+window.addEventListener('load', clearMessages);
+
+// --- LOGIKA REAL-TIME (Menghilang otomatis saat diketik) ---
+noPendaftaranInput.addEventListener('input', function() { if (/^\d{3}$/.test(this.value.trim())) clearError(this, 'noPendaftaranError'); });
+nisnInput.addEventListener('input', function() { if (/^\d{10}$/.test(this.value.trim())) clearError(this, 'nisnError'); });
+noKKInput.addEventListener('input', function() { if (/^\d{16}$/.test(this.value.trim())) clearError(this, 'noKKError'); });
+nikSiswaInput.addEventListener('input', function() { if (/^\d{16}$/.test(this.value.trim())) clearError(this, 'nikSiswaError'); });
+namaInput.addEventListener('input', function() { if (this.value.trim() !== '') clearError(this, 'namaError'); });
+tglLahirInput.addEventListener('change', function() { if (this.value !== '') clearError(this, 'tglLahirError'); });
+asalSekolahInput.addEventListener('input', function() { if (this.value.trim() !== '') clearError(this, 'asalSekolahError'); });
+
+namaIbuInput.addEventListener('input', function() { if (this.value.trim() !== '') clearError(this, 'namaIbuError'); });
+pekerjaanIbuInput.addEventListener('change', function() { if (this.value !== '') clearError(this, 'pekerjaanIbuError'); });
+namaAyahInput.addEventListener('input', function() { if (this.value.trim() !== '') clearError(this, 'namaAyahError'); });
+pekerjaanAyahInput.addEventListener('change', function() { if (this.value !== '') clearError(this, 'pekerjaanAyahError'); });
+
+// Logika Real-time untuk Radio Button (Jenis Kelamin)
+const jkRadios = document.querySelectorAll('input[name="jenisKelamin"]');
+jkRadios.forEach(radio => radio.addEventListener('change', () => {
+    clearError(document.getElementById('jenisKelaminContainer'), 'jenisKelaminError');
+}));
+
+// Logika Real-time untuk Checkbox Deklarasi
+declarationCheckbox.addEventListener('change', function() {
+    if (this.checked) clearError(null, 'declarationError');
+});
+
+// --- FUNGSI VALIDASI UTAMA (Saat tombol ditekan) ---
 function validateForm() {
     clearMessages();
     let isValid = true;
 
-    if (!/^\d{3}$/.test(noPendaftaranInput.value.trim())) { document.getElementById('noPendaftaranError').textContent = 'Wajib 3 digit angka.'; isValid = false; }
-    if (!/^\d{10}$/.test(nisnInput.value.trim())) { document.getElementById('nisnError').textContent = 'Wajib 10 digit angka.'; isValid = false; }
-    if (!/^\d{16}$/.test(noKKInput.value.trim())) { document.getElementById('noKKError').textContent = 'Wajib 16 digit angka.'; isValid = false; }
-    if (!/^\d{16}$/.test(nikSiswaInput.value.trim())) { document.getElementById('nikSiswaError').textContent = 'Wajib 16 digit angka.'; isValid = false; }
-    if (namaInput.value.trim() === '') { document.getElementById('namaError').textContent = 'Wajib diisi.'; isValid = false; }
-    if (tglLahirInput.value === '') { document.getElementById('tglLahirError').textContent = 'Pilih tanggal lahir.'; isValid = false; }
-    if (asalSekolahInput.value.trim() === '') { document.getElementById('asalSekolahError').textContent = 'Wajib diisi.'; isValid = false; }
+    if (!/^\d{3}$/.test(noPendaftaranInput.value.trim())) { showError(noPendaftaranInput, 'noPendaftaranError', 'Wajib 3 digit angka.'); isValid = false; }
+    if (!/^\d{10}$/.test(nisnInput.value.trim())) { showError(nisnInput, 'nisnError', 'Wajib 10 digit angka.'); isValid = false; }
+    if (!/^\d{16}$/.test(noKKInput.value.trim())) { showError(noKKInput, 'noKKError', 'Wajib 16 digit angka.'); isValid = false; }
+    if (!/^\d{16}$/.test(nikSiswaInput.value.trim())) { showError(nikSiswaInput, 'nikSiswaError', 'Wajib 16 digit angka.'); isValid = false; }
+    if (namaInput.value.trim() === '') { showError(namaInput, 'namaError', 'Wajib diisi.'); isValid = false; }
+    if (tglLahirInput.value === '') { showError(tglLahirInput, 'tglLahirError', 'Pilih tanggal lahir.'); isValid = false; }
+    if (asalSekolahInput.value.trim() === '') { showError(asalSekolahInput, 'asalSekolahError', 'Wajib diisi.'); isValid = false; }
     
     // Data Orang Tua
-    if (namaIbuInput.value.trim() === '') { document.getElementById('namaIbuError').textContent = 'Wajib diisi.'; isValid = false; }
-    if (pekerjaanIbuInput.value === '') { document.getElementById('pekerjaanIbuError').textContent = 'Pilih salah satu.'; isValid = false; }
-    if (namaAyahInput.value.trim() === '') { document.getElementById('namaAyahError').textContent = 'Wajib diisi.'; isValid = false; }
-    if (pekerjaanAyahInput.value === '') { document.getElementById('pekerjaanAyahError').textContent = 'Pilih salah satu.'; isValid = false; }
+    if (namaIbuInput.value.trim() === '') { showError(namaIbuInput, 'namaIbuError', 'Wajib diisi.'); isValid = false; }
+    if (pekerjaanIbuInput.value === '') { showError(pekerjaanIbuInput, 'pekerjaanIbuError', 'Pilih salah satu.'); isValid = false; }
+    if (namaAyahInput.value.trim() === '') { showError(namaAyahInput, 'namaAyahError', 'Wajib diisi.'); isValid = false; }
+    if (pekerjaanAyahInput.value === '') { showError(pekerjaanAyahInput, 'pekerjaanAyahError', 'Pilih salah satu.'); isValid = false; }
 
     const jenisKelaminChecked = document.querySelector('input[name="jenisKelamin"]:checked');
-    if (!jenisKelaminChecked) { document.getElementById('jenisKelaminError').textContent = 'Pilih jenis kelamin.'; isValid = false; }
+    if (!jenisKelaminChecked) { showError(document.getElementById('jenisKelaminContainer'), 'jenisKelaminError', 'Pilih jenis kelamin.'); isValid = false; }
     if (!capturedImageData) { document.getElementById('photoError').textContent = 'Foto wajah & lokasi wajib diambil.'; isValid = false; }
     if (!declarationCheckbox.checked) { document.getElementById('declarationError').textContent = 'Wajib dicentang untuk melanjutkan.'; isValid = false; }
     
