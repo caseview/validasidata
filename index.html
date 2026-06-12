@@ -47,6 +47,9 @@
       </div>
       <span id="jenisKelaminError" class="error-text"></span>
       <br>
+      <label>Tgl Lahir Siswa</label>
+      <input type="date" name="tanggal_lahir" id="tgl_lahir" class="form-control" required="" onchange="hitungUsiaOtomatis(this, 'usia_input')">
+      
       <label>Asal Sekolah</label>
       <input type="text" id="asalSekolah" placeholder="Contoh: SDN 2 MUARA CIUJUNG BARAT">
       <span id="asalSekolahError" class="error-text"></span>
@@ -57,11 +60,39 @@
       <input type="text" id="namaIbu" placeholder="Nama Ibu Kandung">
       <span id="namaIbuError" class="error-text"></span>
 
+      <label>Pekerjaan Ibu Kandung</label>
+      <select name="pekerjaanIbu" class="form-select pekerjaan-select" required="">
+      <option value="">- Pilih -</option>
+        <option value="PNS">PNS</option>
+        <option value="TNI/POLRI">TNI/POLRI</option>
+        <option value="Pensiunan">Pensiunan</option>
+        <option value="Karyawan Swasta">Karyawan Swasta</option>
+        <option value="Wiraswasta">Wiraswasta</option>
+        <option value="Buruh">Buruh</option>
+        <option value="Petani">Petani</option>
+        <option value="Lainnya">Jasa lainnya (Manual)</option>
+        </select>
+    
+
       <hr style="margin: 20px 0; border: 0; border-top: 1px solid #ccc;">
 
       <label>Nama Ayah Kandung</label>
       <input type="text" id="namaAyah" placeholder="Nama Ayah Kandung">
       <span id="namaAyahError" class="error-text"></span>
+
+            <label>Pekerjaan Ayah Kandung</label>
+      <select name="pekerjaanAyah" class="form-select pekerjaan-select" required="">
+      <option value="">- Pilih -</option>
+        <option value="PNS">PNS</option>
+        <option value="TNI/POLRI">TNI/POLRI</option>
+        <option value="Pensiunan">Pensiunan</option>
+        <option value="Karyawan Swasta">Karyawan Swasta</option>
+        <option value="Wiraswasta">Wiraswasta</option>
+        <option value="IRT">IRT</option>
+        <option value="Buruh">Buruh</option>
+        <option value="Petani">Petani</option>
+        <option value="Lainnya">Jasa lainnya (Manual)</option>
+        </select>
       
       <hr style="margin: 20px 0; border: 0; border-top: 1px solid #ccc;">
 
