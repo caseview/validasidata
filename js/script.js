@@ -29,7 +29,7 @@ const spinner = document.getElementById('spinner');
 const statusMessage = document.getElementById('statusMessage');
 
 // PENTING: MASUKKAN URL APPS SCRIPT ANDA DI SINI
-const scriptUrl = 'MASUKKAN_URL_WEB_APP_APPS_SCRIPT_ANDA_DISINI';
+const scriptUrl = 'https://script.google.com/macros/s/AKfycbw_OJT7TctYrJBwYGBtQUsRQlXj7PL_6OtJsEsHEXmeZpbawiSIbauX9t8MqZsQV_Gg/exec';
 
 let stream;
 let capturedImageData = null;
